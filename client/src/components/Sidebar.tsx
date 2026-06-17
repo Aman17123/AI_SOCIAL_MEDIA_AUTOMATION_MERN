@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, setisOpen }: SidebarProps) => {
   const navItems = [
     { name: "Dashboard", icon: LayoutDashboardIcon, path: "/dashboard" },
     { name: "Accounts", icon: UsersIcon, path: "/accounts" },
-    { name: "Scheduler", icon: CalendarDaysIcon, path: "/schedule" }, 
+    { name: "Scheduler", icon: CalendarDaysIcon, path: "/scheduler" }, 
     { name: "AI Composer", icon: Wand2Icon, path: "/ai-composer" },
   ];
 
