@@ -8,34 +8,31 @@ const steps = [
 
 export default function HowItWorks() {
     return (
-        <section id="how-it-works" className="py-24 bg-white">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6">
-                <div className="text-center mb-16">
-                    <div className="mb-6 inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/15 text-red-500 text-[11px] font-medium tracking-[0.06em] uppercase px-3.5 py-1.5 rounded-full">
+        <section id="how-it-works" className="relative overflow-hidden bg-white py-24 sm:py-28">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,rgba(239,68,68,0.12),transparent_40%)]" />
+            <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto mb-16 max-w-2xl text-center">
+                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-red-500/15 bg-red-500/10 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-red-500 shadow-sm shadow-red-100/70">
                         <CheckCircleIcon className="size-3" />
                         Simple setup
                     </div>
-                    <h2 className="font-serif font-medium text-4xl sm:text-5xl leading-tight text-gray-900">
+                    <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-5xl">
                         Up and running in <span className="text-red-400 italic">minutes</span>
                     </h2>
-                    <p className="mt-5 text-gray-500 max-w-lg mx-auto leading-relaxed">No complicated onboarding, no steep learning curve. Just connect, create, and grow.</p>
+                    <p className="mx-auto mt-5 max-w-lg leading-relaxed text-slate-500">No complicated onboarding, no steep learning curve. Just connect, create, and grow.</p>
                 </div>
 
-                <div className="space-y-6">
+                <div className="grid gap-4 md:grid-cols-3">
                     {steps.map((s, i) => (
-                        <div key={s.step} className="flex gap-6 items-start">
-                            <div className="shrink-0 size-12 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center">
-                                <span className="text-sm font-medium text-red-500">{s.step}</span>
-                            </div>
-                            <div className="pt-1">
-                                <h3 className=" text-slate-900 mb-1">{s.title}</h3>
-                                <p className="text-slate-500 text-sm leading-relaxed">{s.description}</p>
-                            </div>
-                            {i < steps.length - 1 && (
-                                <div className="hidden sm:block ml-auto shrink-0 self-center">
-                                    <ArrowRightIcon className="size-4 text-slate-200" />
+                        <div key={s.step} className="group relative rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/80 transition-all duration-300 hover:-translate-y-1 hover:border-red-200 hover:shadow-xl hover:shadow-red-100/70">
+                            <div className="mb-8 flex items-center justify-between">
+                                <div className="flex size-13 shrink-0 items-center justify-center rounded-2xl border border-red-100 bg-red-50 shadow-inner shadow-white">
+                                    <span className="text-sm font-semibold text-red-500">{s.step}</span>
                                 </div>
-                            )}
+                                {i < steps.length - 1 && <ArrowRightIcon className="hidden size-4 text-slate-300 transition-transform duration-300 group-hover:translate-x-1 md:block" />}
+                            </div>
+                            <h3 className="mb-2 font-semibold text-slate-950">{s.title}</h3>
+                            <p className="text-sm leading-relaxed text-slate-500">{s.description}</p>
                         </div>
                     ))}
                 </div>
