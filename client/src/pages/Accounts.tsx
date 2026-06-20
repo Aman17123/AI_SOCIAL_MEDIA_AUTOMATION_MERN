@@ -2,6 +2,7 @@ import { PlusIcon } from "lucide-react";
 import { dummyAccountsData, PLATFORMS } from "../assets/assets";
 import { useEffect, useState } from "react";
 import AccountList from "../components/AccountList";
+import PlatformPickerModal from "../components/PlatformPickerModal";
 
 const Accounts = () => {
   const [accounts, setAccounts] = useState<any[]>([]);
@@ -9,7 +10,7 @@ const Accounts = () => {
   const [showPlatformPicker, setShowPlatformPicker] = useState(false);
 
   const handleDisconnect = async (accountId: string) => {
-    setAccounts(accounts.filter((a) => a.id !== accountId));
+    setAccounts((prev) => prev.filter((a) => a.id !== accountId));
   };
 
   const fetchAccounts = async (
@@ -24,6 +25,31 @@ const Accounts = () => {
   useEffect(() => {
     fetchAccounts();
   }, []);
+
+  const handleConnect = async (platformId: string) => {
+    setConnecting(platformId);
+
+    setTimeout(() => {
+      const platform = PLATFORMS.find((p) => p.id === platformId);
+
+      if (!platform) {
+        setConnecting(null);
+        return;
+      }
+
+      const newAccount = {
+        id: Date.now().toString(),
+        platform: platform.id,
+        name: platform.name,
+        username: `@${platform.name.toLowerCase()}`,
+        connected: true,
+      };
+
+      setAccounts((prev) => [...prev, newAccount]);
+      setConnecting(null);
+      setShowPlatformPicker(false);
+    }, 1000);
+  };
 
   const connectedIds = accounts.map((a) => a.platform);
 
@@ -46,7 +72,15 @@ const Accounts = () => {
         </button>
       </div>
 
-      {/* platform picker model */}
+      {/* platform picker modal */}
+      {showPlatformPicker && (
+        <PlatformPickerModal
+          connectedIds={connectedIds}
+          connecting={connecting}
+          onClose={() => setShowPlatformPicker(false)}
+          onConnect={handleConnect}
+        />
+      )}
 
       {/* connected accounts list */}
       <AccountList accounts={accounts} onDisconnect={handleDisconnect} />
