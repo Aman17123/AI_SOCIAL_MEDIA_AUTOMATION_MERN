@@ -42,29 +42,32 @@ const features = [
 
 export default function Features() {
     return (
-        <section id="features" className="py-24 bg-slate-50">
-            <div className="max-w-6xl mx-auto px-4 sm:px-6">
-                <div className="text-center mb-16">
-                    <div className="mb-6 inline-flex items-center gap-1.5 bg-red-500/10 border border-red-500/15 text-red-500 text-[11px] font-medium tracking-[0.06em] uppercase px-3.5 py-1.5 rounded-full">
+        <section id="features" className="relative overflow-hidden bg-slate-950 py-24 text-white sm:py-28">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_0%,rgba(239,68,68,0.22),transparent_36%),linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:auto,64px_64px,64px_64px]" />
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+            <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto mb-16 max-w-3xl text-center">
+                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-red-400/25 bg-red-500/10 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-red-200 shadow-sm shadow-red-950/40 backdrop-blur">
                         <ZapIcon className="size-3" />
                         Everything you need
                     </div>
-                    <h2 className="font-serif text-4xl sm:text-5xl font-medium leading-tight text-gray-900">
+                    <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl">
                         Automate your entire
                         <br />
-                        <span className="text-red-400 italic">social media workflow</span>
+                        <span className="bg-gradient-to-r from-red-300 via-rose-200 to-orange-200 bg-clip-text italic text-transparent">social media workflow</span>
                     </h2>
-                    <p className="mt-5 text-gray-500 max-w-xl mx-auto leading-relaxed">From content creation to scheduling — Scheduler handles it all so you can focus on what matters most.</p>
+                    <p className="mx-auto mt-5 max-w-xl leading-relaxed text-slate-400">From content creation to scheduling — Scheduler handles it all so you can focus on what matters most.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     {features.map((f) => (
-                        <div key={f.title} className="bg-white rounded-2xl border border-slate-100 p-6 hover:border-slate-200 hover:shadow-md hover:shadow-slate-100 group">
-                            <div className={`size-10 rounded-xl flex items-center justify-center mb-4 ${f.color}`}>
+                        <div key={f.title} className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.055] p-6 shadow-2xl shadow-slate-950/20 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-red-300/35 hover:bg-white/[0.075]">
+                            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/35 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <div className={`mb-5 flex size-11 items-center justify-center rounded-2xl ring-1 ring-white/10 ${f.color} shadow-lg shadow-red-950/20 transition-transform duration-300 group-hover:scale-105`}>
                                 <f.icon className="size-5" />
                             </div>
-                            <h3 className=" text-slate-900 mb-2">{f.title}</h3>
-                            <p className="text-sm text-slate-500/90 leading-relaxed">{f.description}</p>
+                            <h3 className="mb-2 font-semibold text-white">{f.title}</h3>
+                            <p className="text-sm leading-relaxed text-slate-400">{f.description}</p>
                         </div>
                     ))}
                 </div>
