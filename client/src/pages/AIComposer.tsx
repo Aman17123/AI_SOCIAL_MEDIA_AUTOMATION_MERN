@@ -41,15 +41,19 @@ const AIComposer = () => {
     }, 2000);
   };
 
-  const tones = ["Professional", "Creative", "Funny", "Minimalist", "Excited"];
-
   const handleSchedule = async () => {
     setScheduling(true);
+
     setTimeout(() => {
-      setLoading(false);
       setScheduling(false);
+      setActiveScheduler(null);
+      setSelectedPlatforms([]);
+      setScheduledDate("");
+      setScheduledTime("");
     }, 2000);
   };
+
+  const tones = ["Professional", "Creative", "Funny", "Minimalist", "Excited"];
 
   return (
     <div className="max-w-4xl mx-auto space-y-12 pb-20 animate-in fade-in duration-700">
@@ -69,6 +73,7 @@ const AIComposer = () => {
 
           <div className="absolute bottom-4 right-2.5 flex items-center gap-3 text-sm">
             <button
+              type="button"
               onClick={() => setGenerateImage(!generateImage)}
               className="flex items-center gap-3 bg-red-50 py-2 px-3 rounded-lg"
             >
@@ -81,13 +86,14 @@ const AIComposer = () => {
               >
                 <span
                   className={`pointer-events-none size-4 transform translate-y-0.5 rounded-full bg-white transition ${
-                    generateImage ? "translate-x-4.5" : "translate-x-0.5"
+                    generateImage ? "translate-x-[18px]" : "translate-x-0.5"
                   }`}
                 />
               </div>
             </button>
 
             <button
+              type="button"
               onClick={handleGenerate}
               disabled={loading}
               className="bg-slate-900 hover:bg-slate-800 text-white flex items-center gap-2 px-4 py-2 rounded-lg disabled:opacity-70 disabled:cursor-not-allowed"
@@ -111,6 +117,7 @@ const AIComposer = () => {
           {tones.map((t) => (
             <button
               key={t}
+              type="button"
               onClick={() => setTone(t)}
               className={`px-4 py-1.5 rounded-full text-sm transition-all border ${
                 tone === t
@@ -138,47 +145,52 @@ const AIComposer = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {generations.map((gen) => (
-            <div
-              key={gen._id}
-              className="group bg-white rounded-2xl border border-slate-100 p-5 hover:border-red-200 transition-all relative overflow-hidden"
-            >
-              <div className="flex flex-col h-full space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-400 uppercase tracking-widest">
-                    {new Date(gen.createdAt).toLocaleString()}
-                  </span>
+          {generations.map((gen) => {
+            const imageUrl = gen.mediaURL || gen.mediaUrl;
 
-                  <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded-md">
-                    {gen.tone}
-                  </span>
-                </div>
+            return (
+              <div
+                key={gen._id}
+                className="group bg-white rounded-2xl border border-slate-100 p-5 hover:border-red-200 transition-all relative overflow-hidden"
+              >
+                <div className="flex flex-col h-full space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-slate-400 uppercase tracking-widest">
+                      {new Date(gen.createdAt).toLocaleString()}
+                    </span>
 
-                <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed flex-1">
-                  {gen.content}
-                </p>
-
-                {gen.mediaURL && (
-                  <div className="rounded-xl overflow-hidden border border-slate-50 bg-slate-50">
-                    <img
-                      src={gen.mediaURL}
-                      alt="Gen"
-                      className="w-full aspect-video opacity-90 group-hover:opacity-100 transition-opacity object-cover"
-                    />
+                    <span className="text-xs text-red-500 bg-red-50 px-2 py-0.5 rounded-md">
+                      {gen.tone}
+                    </span>
                   </div>
-                )}
 
-                <div className="flex items-center gap-2 pt-2">
-                  <button
-                    onClick={() => setActiveScheduler(gen)}
-                    className="flex-1 bg-slate-100 hover:bg-red-500 hover:text-white text-slate-600 text-xs py-2.5 rounded-lg transition-all"
-                  >
-                    Schedule Post
-                  </button>
+                  <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed flex-1">
+                    {gen.content}
+                  </p>
+
+                  {imageUrl && (
+                    <div className="rounded-xl overflow-hidden border border-slate-100 bg-slate-50">
+                      <img
+                        src={imageUrl}
+                        alt="Gen"
+                        className="w-full h-40 object-cover opacity-90 group-hover:opacity-100 transition-opacity"
+                      />
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setActiveScheduler(gen)}
+                      className="flex-1 bg-slate-100 hover:bg-red-500 hover:text-white text-slate-600 text-xs py-2.5 rounded-lg transition-all"
+                    >
+                      Schedule Post
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {generations.length === 0 && (
             <div className="col-span-full py-20 text-center space-y-2">
@@ -195,7 +207,7 @@ const AIComposer = () => {
         </div>
       </div>
 
-      {/* Scheduler Posts */}
+      {/* Scheduler Modal */}
       {activeScheduler && (
         <div className="fixed inset-0 min-h-screen z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh]">
@@ -204,6 +216,7 @@ const AIComposer = () => {
               <h3 className="text-slate-900">Schedule Generation</h3>
 
               <button
+                type="button"
                 onClick={() => setActiveScheduler(null)}
                 className="p-2 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
               >
@@ -223,29 +236,33 @@ const AIComposer = () => {
                 <p className="text-slate-800 text-sm leading-relaxed whitespace-pre-wrap">
                   {activeScheduler.content}
                 </p>
-                {activeScheduler.mediaURL && (
+
+                {(activeScheduler.mediaURL || activeScheduler.mediaUrl) && (
                   <img
-                    src={activeScheduler.mediaURL}
+                    src={activeScheduler.mediaURL || activeScheduler.mediaUrl}
                     alt="preview"
-                    className="w-full aspect-video object-cover rounded-xl border border-slate-200 shadow-sm"
+                    className="w-full h-56 object-cover rounded-xl border border-slate-200 shadow-sm"
                   />
                 )}
               </div>
             </div>
 
+            {/* Footer */}
             <div className="p-8 bg-slate-50/50 border-t border-slate-50 space-y-8">
-              {/* Options */}
               <div className="space-y-6">
                 <div>
                   <label className="block text-xs text-slate-600 uppercase tracking-widest mb-4">
                     Select Channels
                   </label>
+
                   <div className="flex flex-wrap gap-2">
                     {PLATFORMS.map((p) => {
                       const active = selectedPlatforms.includes(p.id);
+
                       return (
                         <button
                           key={p.id}
+                          type="button"
                           onClick={() =>
                             setSelectedPlatforms((prev) =>
                               prev.includes(p.id)
@@ -253,13 +270,13 @@ const AIComposer = () => {
                                 : [...prev, p.id],
                             )
                           }
-                          className={`p-2.5 rounded-md border text-xs ${
+                          className={`p-2.5 rounded-md border text-xs transition-all ${
                             active
-                              ? "bg-red-500/80 text-white"
+                              ? "bg-red-500/80 text-white border-red-500"
                               : "bg-white border-slate-200 text-slate-400 hover:border-slate-300"
                           }`}
                         >
-                          <p.icon className="size-4.5" />
+                          <p.icon className="size-4" />
                         </button>
                       );
                     })}
@@ -269,34 +286,45 @@ const AIComposer = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="relative">
                     <CalendarIcon className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
                     <input
                       type="date"
-                      className="w-full pl-11  pr-4 py-3 bg-slate-50 borser border-slate-100 rounded-md text-slate-900 text-sm foucs:outline-none transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-md text-slate-900 text-sm focus:outline-none transition-all"
                       value={scheduledDate}
                       onChange={(e) => setScheduledDate(e.target.value)}
                     />
                   </div>
+
                   <div className="relative">
                     <ClockIcon className="size-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
                     <input
                       type="time"
-                      className="w-full pl-11  pr-4 py-3 bg-slate-50 borser border-slate-100 rounded-md text-slate-900 text-sm foucs:outline-none transition-all"
+                      className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-md text-slate-900 text-sm focus:outline-none transition-all"
                       value={scheduledTime}
                       onChange={(e) => setScheduledTime(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
+
               <button
+                type="button"
                 onClick={handleSchedule}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-md bg-slate-200 text-slate-700 hover:bg-red-500 hover:text-white transition"
+                disabled={scheduling}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-md bg-slate-200 text-slate-700 hover:bg-red-500 hover:text-white transition disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {scheduling ? (
-                  <Loader2Icon className="size-4 animate-spin" />
+                  <>
+                    <Loader2Icon className="size-4 animate-spin" />
+                    <span>Scheduling...</span>
+                  </>
                 ) : (
-                  <TimerIcon className="size-4" />
+                  <>
+                    <TimerIcon className="size-4" />
+                    <span>Schedule Post</span>
+                  </>
                 )}
-                Schedule Post
               </button>
             </div>
           </div>
