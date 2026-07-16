@@ -2,6 +2,7 @@ import "dotenv/config";
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
+import authRouter from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -11,7 +12,10 @@ app.use(express.json());
 const port = process.env.PORT || 3000;
 
 //DATABASE CONNECTION
-connectDB();
+await connectDB();
+
+
+app.use("/api/auth", authRouter);
 
 //global error hanlder
 app.use((err: any, _req: Request, _res: Response, _next: NextFunction) => {
