@@ -433,7 +433,7 @@ For full backend functionality including the scheduler:
 **Aman Alphiones**
 
 <p align="left">
-  <a href="https://github.com/<your-github-username>">
+  <a href="https://amannakoti.vercel.app/">
     <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
   </a>
   <a href="https://linkedin.com/in/<your-linkedin-username>">
