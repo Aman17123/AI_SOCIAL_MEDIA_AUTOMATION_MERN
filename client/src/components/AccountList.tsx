@@ -44,7 +44,30 @@ const AccountList = ({ accounts, onDisconnect }: AccountListProps) => {
       {accounts.map((account) => {
         const meta = PLATFORMS.find((p) => p.id === account.platform);
 
-        if (!meta) return null;
+        if (!meta) {
+          console.warn(`[AccountList] Unknown platform "${account.platform}" for account:`, account);
+          return (
+            <div
+              key={account._id}
+              className="group bg-white border border-amber-200 rounded-2xl p-5 flex items-center gap-4"
+            >
+              <div className="size-12 bg-amber-50 rounded-xl flex items-center justify-center shrink-0">
+                <AlertCircleIcon className="size-5 text-amber-500" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-slate-900 truncate">{account.handle || "Unknown"}</div>
+                <div className="text-sm text-amber-600 mt-0.5">{account.platform} (unknown platform)</div>
+              </div>
+              <button
+                onClick={() => handleDisconnect(account._id)}
+                title="Remove account"
+                className="ml-2 p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-all"
+              >
+                <UnplugIcon className="size-4" />
+              </button>
+            </div>
+          );
+        }
 
         const Icon = meta.icon;
 

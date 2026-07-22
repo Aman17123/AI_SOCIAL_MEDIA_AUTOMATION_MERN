@@ -47,6 +47,7 @@ export const registerUser = async (
         _id: user._id,
         name: user.name,
         email: user.email,
+        token: generateToken(user._id.toString()),
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });

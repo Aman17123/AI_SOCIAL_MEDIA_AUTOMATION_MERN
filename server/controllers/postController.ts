@@ -28,7 +28,7 @@ export const generatePost = async (
 
     // Generate text
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-2.0-flash",
       contents: `
         Generate a social media post based on this prompt: "${prompt}".
         Tone: ${tone}.
@@ -68,28 +68,22 @@ export const generatePost = async (
 
     if (generateImage) {
       try {
-        // Use Gemini's native image generation model ("Nano Banana").
-        // It returns image bytes inline (base64) inside the response parts,
-        // so there's no polling/job-status step like Leonardo required.
-        const imageResponse = await ai.models.generateContent({
-          model: "gemini-2.5-flash-image",
-          contents: imagePrompt,
+        const imageResponse = await ai.models.generateImages({
+          model: "imagen-3.0-generate-001",
+          prompt: imagePrompt,
+          config: {
+            numberOfImages: 1,
+          },
         });
 
-        const parts = imageResponse.candidates?.[0]?.content?.parts || [];
-        const imagePart = parts.find((part) => part.inlineData);
+        const imageBytes = imageResponse?.generatedImages?.[0]?.image?.imageBytes;
 
-        if (!imagePart?.inlineData?.data) {
+        if (!imageBytes) {
           throw new Error("Gemini did not return any image data.");
         }
 
-        const mimeType = imagePart.inlineData.mimeType || "image/png";
-        const base64Image = imagePart.inlineData.data;
-
-        // Cloudinary accepts a base64 data URI directly, so we can upload
-        // straight from memory without ever writing a temp file to disk.
         const uploadResult = await cloudinary.uploader.upload(
-          `data:${mimeType};base64,${base64Image}`,
+          `data:image/png;base64,${imageBytes}`,
           { folder: "ai-generations" },
         );
 
@@ -99,6 +93,7 @@ export const generatePost = async (
           "Image generation failed:",
           error?.response?.data || error?.message || error,
         );
+        throw new Error("Image generation failed. Please try again.");
       }
     }
 
@@ -127,11 +122,14 @@ export const getGenerations = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const {} = req.body;
+    const generations = await Generation.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(20);
+    res.json(generations);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: error?.message || "Failed to generate post" });
+      .json({ message: error?.message || "Failed to fetch generations" });
   }
 };
 
@@ -142,11 +140,14 @@ export const getPosts = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const {} = req.body;
+    const posts = await Post.find({ user: req.user._id })
+      .sort({ createdAt: -1 })
+      .limit(50);
+    res.json(posts);
   } catch (error: any) {
     res
       .status(500)
-      .json({ message: error?.message || "Failed to generate post" });
+      .json({ message: error?.message || "Failed to fetch posts" });
   }
 };
 
@@ -173,7 +174,8 @@ export const schedulePost = async (
     let mediaUrl: string | undefined = req.body.mediaUrl;
     let mediaType: "image" | "video" | undefined = req.body.mediaType;
 
-    if (req.file) {
+    const file = req.file;
+    if (file && file.buffer) {
       const result = await new Promise<any>((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
           {
@@ -189,7 +191,7 @@ export const schedulePost = async (
           },
         );
 
-        stream.end(req.file.buffer);
+        stream.end(file.buffer);
       });
 
       mediaUrl = result.secure_url;

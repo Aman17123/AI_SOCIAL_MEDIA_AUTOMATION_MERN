@@ -24,10 +24,10 @@ app.use("/api/auth", authRouter);
 app.use("/api/oauth", socialAuthRouter);
 app.use("/api/accounts", accountRouter);
 app.use("/api/posts", postRouter);
-app.use("/api/activity", accountRouter);
+app.use("/api/activity", activityRouter);
 
 // Initialize Scheduler
-initScheduler;
+initScheduler();
 
 //global error hanlder
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -35,7 +35,7 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).send(err?.response?.data?.message || err?.message);
 });
 
-await app.get("/", (_req: Request, res: Response) => {
+app.get("/", (_req: Request, res: Response) => {
   res.send("Server is Live!");
 });
 
