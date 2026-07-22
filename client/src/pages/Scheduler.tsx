@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { PLATFORMS } from "../assets/assets";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { isAxiosError } from "axios";
 import {
   XIcon,
   CalendarIcon,
@@ -24,8 +25,13 @@ const Scheduler = () => {
     try {
       const { data } = await api.get("/api/posts");
       setPosts(data);
-    } catch (error: any) {
-      toast.error(error?.response?.data?.message || error.message);
+    } catch (error) {
+      const msg = isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : error instanceof Error
+          ? error.message
+          : "An error occurred";
+      toast.error(msg);
     }
   };
 
@@ -133,7 +139,7 @@ const Scheduler = () => {
                       }`}
                     >
                       <Icon className="size-4.5" />
-                      <span className="text-sm font-medium">{p.label}</span>
+                      <span className="text-sm font-medium">{p.name}</span>
                     </button>
                   );
                 })}

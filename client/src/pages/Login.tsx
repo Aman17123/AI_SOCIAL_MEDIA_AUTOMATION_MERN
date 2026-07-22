@@ -4,6 +4,7 @@ import { MailIcon, LockIcon, ArrowRightIcon, User2Icon } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import api from "../api/axios";
 import toast from "react-hot-toast";
+import { isAxiosError } from "axios";
 
 export default function Login() {
   const [loginState, setLoginState] = useState(true);
@@ -26,7 +27,12 @@ export default function Login() {
       login(data, data.token);
       navigate("/dashboard");
     } catch (error) {
-      toast.error(error.response?.data?.message || error?.message);
+      const msg = isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : error instanceof Error
+          ? error.message
+          : "An error occurred";
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
