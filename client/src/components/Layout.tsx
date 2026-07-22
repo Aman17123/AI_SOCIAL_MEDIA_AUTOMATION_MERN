@@ -2,6 +2,8 @@ import { useState } from "react";
 import Sidebar from "./Sidebar";
 import { Outlet, useLocation } from "react-router-dom";
 import { MenuIcon } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const pageTitles: Record<string, string> = {
   "/dashboard": "Dashboard",
@@ -11,10 +13,23 @@ const pageTitles: Record<string, string> = {
 };
 
 const Layout = () => {
+  const { isAuthenticated, isLoading } = useAuth();
   const location = useLocation();
   const title = pageTitles[location.pathname] || "SocialAI";
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-slate-50">
+        <div className="size-8 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   return (
     <div className="flex h-screen bg-slate-100">
@@ -39,9 +54,7 @@ const Layout = () => {
           </button>
 
           <div>
-            <h1 className="text-slate-900 font-semibold text-lg">
-              {title}
-            </h1>
+            <h1 className="text-slate-900 font-semibold text-lg">{title}</h1>
             <p className="text-sm text-slate-500 hidden sm:block">
               Manage and automate your social media accounts
             </p>

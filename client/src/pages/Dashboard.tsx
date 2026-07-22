@@ -1,9 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  dummyPostsData,
-  dummyAccountsData,
-  dummyActivityData,
-} from "../assets/assets";
+import api from "../api/axios";
 
 import {
 ClockIcon,
@@ -17,7 +13,7 @@ SendIcon,
 const Dashboard = () => {
   const [stats, setStats] = useState({
     scheduled: 0,
-    published: 0,
+    posted: 0,
     connectedAccounts: 0,
   });
 
@@ -26,25 +22,30 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const [postsRes, accountsRes, activityRes] = [
-          { data: dummyPostsData },
-          { data: dummyAccountsData },
-          { data: dummyActivityData },
-        ];
+        console.log("[Dashboard] Fetching dashboard data from API...");
+
+        const [postsRes, accountsRes, activityRes] = await Promise.all([
+          api.get("/api/posts"),
+          api.get("/api/accounts"),
+          api.get("/api/activity"),
+        ]);
 
         const posts = postsRes.data;
+        const accounts = accountsRes.data;
+
+        console.log(`[Dashboard] Posts: ${posts.length}, Accounts: ${accounts.length}, Activities: ${activityRes.data.length}`);
 
         setStats({
           scheduled: posts.filter((p: any) => p.status === "scheduled").length,
-          published: posts.filter((p: any) => p.status === "published").length,
-          connectedAccounts: accountsRes.data.filter(
+          posted: posts.filter((p: any) => p.status === "posted").length,
+          connectedAccounts: accounts.filter(
             (a: any) => a.status === "connected"
           ).length,
         });
 
         setActivities(activityRes.data);
       } catch (error: any) {
-        console.error("Error fetching dashboard data:", error);
+        console.error("[Dashboard] Error fetching data:", error?.response?.data || error?.message || error);
       }
     };
 
@@ -56,11 +57,11 @@ const Dashboard = () => {
       label: "Scheduled Posts",
       value: stats.scheduled,
       icon: ClockIcon,
-      trend: "+2 today",
+      trend: "Upcoming",
     },
     {
-      label: "Published Posts",
-      value: stats.published,
+      label: "Posted",
+      value: stats.posted,
       icon: CheckCircleIcon,
       trend: "All time",
     },
@@ -134,7 +135,7 @@ const Dashboard = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2 mb-1">
                     <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 text-zinc-600">
-                      Published
+                      {(activity.actionType || "Published").replace(/_/g, " ")}
                     </span>
                     <span className="text-xs text-slate-400 shrink-0">
                       {new Date(activity.createdAt).toDateString()}

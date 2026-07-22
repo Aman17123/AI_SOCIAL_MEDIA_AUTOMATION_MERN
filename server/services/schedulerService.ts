@@ -71,7 +71,7 @@ export const initScheduler = () => {
             `Zernio post created: ${publishedPost._id || publishedPost.id}`,
           );
 
-          post.status = "published";
+          post.status = "posted";
           await post.save();
 
           await ActivityLog.create({
@@ -85,7 +85,7 @@ export const initScheduler = () => {
         } catch (err) {
           console.error(
             `Failed to publish post ${post._id}:`,
-            err?.response?.data || err?.message,
+            (err as any)?.response?.data || (err as any)?.message,
           );
 
           post.status = "failed";

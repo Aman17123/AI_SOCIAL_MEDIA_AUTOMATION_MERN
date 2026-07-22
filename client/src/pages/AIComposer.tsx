@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { dummyGenerationData, PLATFORMS } from "../assets/assets";
+import { PLATFORMS } from "../assets/assets";
+import api from "../api/axios";
+import toast from "react-hot-toast";
 import {
   ArrowRightIcon,
   CalendarIcon,
@@ -26,7 +28,12 @@ const AIComposer = () => {
   const [scheduling, setScheduling] = useState(false);
 
   const fetchGenerations = async () => {
-    setGenerations(dummyGenerationData);
+    try {
+      const { data } = await api.get("api/posts/generations");
+      setGenerations(data);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error?.message);
+    }
   };
 
   useEffect(() => {
@@ -34,23 +41,68 @@ const AIComposer = () => {
   }, []);
 
   const handleGenerate = async () => {
+    if (!prompt) {
+      toast.error("Please enter a prompt");
+      return;
+    }
+
     setLoading(true);
 
-    setTimeout(() => {
+    try {
+      const { data } = await api.post("/api/posts/generate", {
+        prompt,
+        tone,
+        generateImage,
+      });
+
+      setGenerations([data, ...generations]);
+      setActiveScheduler(data);
+      toast.success("Content generated!");
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || error?.message);
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   const handleSchedule = async () => {
-    setScheduling(true);
+    if (!activeScheduler) return;
 
-    setTimeout(() => {
-      setScheduling(false);
+    if (selectedPlatforms.length === 0) {
+      toast.error("Select at least one platform");
+      return;
+    }
+
+    if (!scheduledDate || !scheduledTime) {
+      toast.error("Select date and time");
+      return;
+    }
+
+    const scheduledFor = new Date(
+      `${scheduledDate}T${scheduledTime}`,
+    ).toISOString();
+
+    setScheduling(true);
+    try {
+      await api.post("/api/posts", {
+        content: activeScheduler.content,
+        mediaUrl: activeScheduler.mediaUrl,
+        mediaType: activeScheduler.mediaType,
+        platforms: selectedPlatforms,
+        scheduledFor,
+        status: "scheduled",
+      });
+
+      toast.success("AI Post scheduled!");
       setActiveScheduler(null);
       setSelectedPlatforms([]);
       setScheduledDate("");
       setScheduledTime("");
-    }, 2000);
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message || "Failed to schedule");
+    } finally {
+      setScheduling(false);
+    }
   };
 
   const tones = ["Professional", "Creative", "Funny", "Minimalist", "Excited"];
