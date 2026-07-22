@@ -16,9 +16,6 @@ app.use(express.json());
 
 const port = process.env.PORT || 3000;
 
-//DATABASE CONNECTION
-await connectDB();
-
 //ROUTES
 app.use("/api/auth", authRouter);
 app.use("/api/oauth", socialAuthRouter);
@@ -26,10 +23,7 @@ app.use("/api/accounts", accountRouter);
 app.use("/api/posts", postRouter);
 app.use("/api/activity", activityRouter);
 
-// Initialize Scheduler
-initScheduler();
-
-//global error hanlder
+//global error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err);
   res.status(500).send(err?.response?.data?.message || err?.message);
@@ -39,6 +33,13 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("Server is Live!");
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+// Only start server when running directly (not on Vercel)
+if (!process.env.VERCEL) {
+  await connectDB();
+  initScheduler();
+  app.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
+}
+
+export default app;

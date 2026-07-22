@@ -1,5 +1,4 @@
 {
-  "dependencies": {
-    "node-cron": "^4.6.0"
-  }
+  "private": true,
+  "workspaces": ["client", "server"]
 }
