@@ -1,28 +1,25 @@
-import { ArrowRightIcon, CheckCircleIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { ArrowRightIcon, CheckCircle2Icon } from "lucide-react";
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
 
+const EASE = "easeOut" as const;
+
 const steps = [
     {
-        step: "01",
-        title: "Connect Your Accounts",
-        description: "Link your social profiles in seconds. We support Twitter, LinkedIn, Facebook, and Instagram.",
-        color: "from-red-500 to-rose-400",
-        glow: "shadow-red-200",
+        title: "Connect",
+        description: "Link your social profiles in seconds. X, LinkedIn, Instagram, Facebook — one workspace, all of them.",
+        detail: "OAuth login, no passwords stored.",
     },
     {
-        step: "02",
-        title: "Create or Generate Content",
-        description: "Write your own post or let our AI craft a caption and image based on your prompt.",
-        color: "from-violet-500 to-purple-400",
-        glow: "shadow-violet-200",
+        title: "Write",
+        description: "Draft a post or let AI generate it from a prompt. Add images, hashtags, and platform-specific tweaks.",
+        detail: "AI generates captions tuned per platform.",
     },
     {
-        step: "03",
-        title: "Schedule & Publish",
-        description: "Pick a time, select your platforms, and hit schedule. We handle publishing automatically.",
-        color: "from-emerald-500 to-teal-400",
-        glow: "shadow-emerald-200",
+        title: "Queue",
+        description: "Pick a time slot or let smart scheduling find the best one. Drag, drop, reorder — your week is set.",
+        detail: "Optimized for engagement by timezone.",
     },
 ];
 
@@ -33,10 +30,9 @@ export default function HowItWorks() {
     const stepsInView = useInView(stepsRef, { once: true, margin: "-60px" });
 
     return (
-        <section id="how-it-works" className="relative overflow-hidden bg-white py-24 sm:py-32">
+        <section id="how-it-works" className="relative overflow-hidden py-24 sm:py-32">
             {/* Background */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_0%,rgba(239,68,68,0.09),transparent)]" />
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(15,23,42,0.025)_1px,transparent_1px),linear-gradient(90deg,rgba(15,23,42,0.025)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_80%_60%_at_50%_50%,black,transparent)]" />
+            <div className="absolute inset-0 bg-[linear-gradient(180deg,var(--color-ink) 0%,var(--color-surface) 50%,var(--color-ink) 100%)]" />
 
             <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
                 {/* Section header */}
@@ -44,59 +40,70 @@ export default function HowItWorks() {
                     ref={headRef}
                     initial={{ opacity: 0, y: 24 }}
                     animate={headInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="mx-auto mb-16 max-w-2xl text-center"
+                    transition={{ duration: 0.6, ease: EASE }}
+                    className="mb-16 max-w-2xl"
                 >
-                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-red-500/15 bg-red-500/8 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-red-500">
-                        <CheckCircleIcon className="size-3" />
-                        Simple setup
+                    <div className="mb-4 inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
+                        <CheckCircle2Icon className="size-3" />
+                        How it works
                     </div>
-                    <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-5xl">
-                        Up and running in{" "}
-                        <span className="italic text-red-400">minutes</span>
+                    <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
+                        Three steps. Then{" "}
+                        <span className="text-accent">you&apos;re live.</span>
                     </h2>
-                    <p className="mx-auto mt-5 max-w-lg leading-relaxed text-slate-500">
-                        No complicated onboarding, no steep learning curve. Just connect, create, and grow.
-                    </p>
                 </motion.div>
 
-                {/* Steps */}
+                {/* Steps — horizontal on desktop, vertical on mobile */}
                 <div ref={stepsRef} className="relative grid gap-6 md:grid-cols-3">
-                    {/* Connecting line (desktop) */}
-                    <div className="absolute top-[52px] left-[calc(16.67%+32px)] right-[calc(16.67%+32px)] hidden h-px md:block">
+                    {/* Connecting line (desktop only) */}
+                    <div className="absolute top-[28px] left-[calc(16.67%+32px)] right-[calc(16.67%+32px)] hidden h-px md:block">
                         <motion.div
                             initial={{ scaleX: 0 }}
                             animate={stepsInView ? { scaleX: 1 } : {}}
                             transition={{ duration: 0.8, delay: 0.4, ease: "easeInOut" }}
-                            className="origin-left h-full bg-gradient-to-r from-red-200 via-violet-200 to-emerald-200"
-                            style={{ borderTopStyle: "dashed", borderTopWidth: 2, backgroundColor: "transparent" }}
+                            className="origin-left h-full bg-border"
                         />
                     </div>
 
                     {steps.map((s, i) => (
                         <motion.div
-                            key={s.step}
+                            key={s.title}
                             initial={{ opacity: 0, y: 32 }}
                             animate={stepsInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.55, delay: 0.15 + i * 0.12, ease: "easeOut" }}
-                            className="group relative rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm shadow-slate-200/80 transition-all duration-300 hover:-translate-y-2 hover:border-slate-200 hover:shadow-xl hover:shadow-slate-200/70"
+                            transition={{ duration: 0.55, delay: 0.15 + i * 0.12, ease: EASE }}
+                            className="group relative"
                         >
-                            {/* Step number badge */}
-                            <div className="mb-7 flex items-center justify-between">
-                                <div className={`relative flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${s.color} shadow-lg ${s.glow} transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl`}>
-                                    <span className="text-sm font-bold text-white">{s.step}</span>
-                                    {/* Glow ring */}
-                                    <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${s.color} opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-40`} />
+                            {/* Step indicator */}
+                            <div className="mb-6 flex items-center gap-4">
+                                <div className="relative flex size-14 shrink-0 items-center justify-center rounded-xl border border-border bg-surface transition-all duration-300 group-hover:border-accent/30 group-hover:shadow-[0_0_12px_rgba(232,168,56,0.15)]">
+                                    <span className="font-display text-lg font-bold text-accent">{i + 1}</span>
                                 </div>
                                 {i < steps.length - 1 && (
-                                    <ArrowRightIcon className="hidden size-4 text-slate-200 transition-all duration-300 group-hover:translate-x-1 group-hover:text-slate-400 md:block" />
+                                    <ArrowRightIcon className="hidden size-4 text-border transition-colors duration-300 group-hover:text-muted md:block" />
                                 )}
                             </div>
-                            <h3 className="mb-3 text-[17px] font-semibold text-slate-950">{s.title}</h3>
-                            <p className="text-sm leading-relaxed text-slate-500">{s.description}</p>
+                            <h3 className="font-display text-lg font-semibold text-white mb-2">{s.title}</h3>
+                            <p className="text-sm text-muted leading-relaxed mb-2">{s.description}</p>
+                            <p className="text-xs text-accent/70 font-medium">{s.detail}</p>
                         </motion.div>
                     ))}
                 </div>
+
+                {/* Bottom CTA */}
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={stepsInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.5, delay: 0.6, ease: EASE }}
+                    className="mt-14 text-center"
+                >
+                    <Link
+                        to="/login"
+                        className="group inline-flex items-center gap-2 rounded-lg border border-border bg-surface px-6 py-3 text-sm font-medium text-text transition-all duration-300 hover:border-accent/30 hover:text-accent"
+                    >
+                        Try it yourself
+                        <ArrowRightIcon className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
+                    </Link>
+                </motion.div>
             </div>
         </section>
     );

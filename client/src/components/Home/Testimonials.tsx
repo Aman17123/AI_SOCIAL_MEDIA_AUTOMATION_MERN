@@ -1,108 +1,103 @@
-import { StarIcon, QuoteIcon } from "lucide-react";
-import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+
+const EASE = "easeOut" as const;
 
 const testimonials = [
     {
         name: "Sarah K.",
         role: "Marketing Manager",
         avatar: "S",
-        avatarBg: "from-red-400 to-pink-500",
-        text: "Scheduler has saved our team 10+ hours a week. The AI composer is genuinely impressive — it writes content that sounds like us.",
-        stars: 5,
+        text: "We went from spending 2 hours a day on posting to 20 minutes a week. The AI composer actually sounds like our brand voice — not generic AI slop.",
+        metric: "10+ hrs/week saved",
     },
     {
         name: "Marcus L.",
         role: "Indie Creator",
         avatar: "M",
-        avatarBg: "from-violet-400 to-purple-500",
-        text: "I used to dread posting. Now I queue up a whole week of content in 20 minutes. The smart scheduling feature alone is worth it.",
-        stars: 5,
+        text: "I queue up a whole week of content in one sitting, then forget about it. The scheduling is smart enough that posts go out when my audience is actually online.",
+        metric: "23 posts/week avg",
     },
     {
         name: "Priya D.",
         role: "Startup Founder",
         avatar: "P",
-        avatarBg: "from-sky-400 to-blue-500",
-        text: "Finally a scheduler that's beautiful AND powerful. The clean dashboard makes it easy to see exactly what's going out and when.",
-        stars: 5,
+        text: "Clean dashboard, no bloat. I can see exactly what's going out, where, and when. Finally a scheduler that respects my time.",
+        metric: "4 platforms, 1 tool",
     },
 ];
 
 export default function Testimonials() {
     const headRef = useRef<HTMLDivElement>(null);
     const headInView = useInView(headRef, { once: true, margin: "-60px" });
-    const cardsRef = useRef<HTMLDivElement>(null);
-    const cardsInView = useInView(cardsRef, { once: true, margin: "-60px" });
 
     return (
-        <section className="relative overflow-hidden bg-[#fbfaf8] py-24 sm:py-32">
-            {/* Background */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_40%_at_15%_15%,rgba(239,68,68,0.09),transparent)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_30%_at_85%_85%,rgba(139,92,246,0.07),transparent)]" />
-            {/* Decorative blur blobs */}
-            <div className="pointer-events-none absolute top-1/4 left-[5%] size-80 rounded-full bg-rose-200/25 blur-[100px]" />
-            <div className="pointer-events-none absolute bottom-1/4 right-[5%] size-64 rounded-full bg-violet-200/20 blur-[80px]" />
-
+        <section className="relative overflow-hidden py-24 sm:py-32">
             <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Section header */}
                 <motion.div
                     ref={headRef}
                     initial={{ opacity: 0, y: 24 }}
                     animate={headInView ? { opacity: 1, y: 0 } : {}}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="mx-auto mb-14 max-w-2xl text-center"
+                    transition={{ duration: 0.6, ease: EASE }}
+                    className="mb-14 max-w-2xl"
                 >
-                    <div className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-red-500/15 bg-white/80 px-3.5 py-1.5 text-[11px] font-medium uppercase tracking-[0.06em] text-red-500 shadow-sm shadow-red-100/70 backdrop-blur">
-                        <StarIcon className="size-3 fill-red-400 text-red-400" />
-                        Testimonials
+                    <div className="mb-4 inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted">
+                        From real users
                     </div>
-                    <h2 className="font-serif text-4xl font-semibold leading-tight tracking-tight text-slate-950 sm:text-5xl">
-                        Loved by{" "}
-                        <span className="text-red-400">creators &amp; teams</span>
+                    <h2 className="font-display text-3xl font-bold leading-tight tracking-tight text-white sm:text-4xl">
+                        Trusted by creators
+                        <br />
+                        <span className="text-accent">and teams alike.</span>
                     </h2>
-                    <p className="mx-auto mt-5 max-w-md text-slate-500">
-                        Join thousands of people who automate their social media with Scheduler.
-                    </p>
                 </motion.div>
 
-                {/* Cards */}
-                <div ref={cardsRef} className="grid grid-cols-1 gap-5 md:grid-cols-3">
+                {/* Testimonial cards — asymmetric grid on desktop */}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                     {testimonials.map((t, i) => (
-                        <motion.div
-                            key={i}
-                            initial={{ opacity: 0, y: 32 }}
-                            animate={cardsInView ? { opacity: 1, y: 0 } : {}}
-                            transition={{ duration: 0.55, delay: i * 0.1, ease: "easeOut" }}
-                            className="group relative flex flex-col gap-5 overflow-hidden rounded-3xl border border-slate-200/70 bg-white/85 p-7 shadow-sm shadow-slate-200/80 backdrop-blur transition-all duration-300 hover:-translate-y-2 hover:border-red-100 hover:shadow-xl hover:shadow-red-100/50"
-                        >
-                            {/* Decorative quote icon */}
-                            <QuoteIcon className="absolute top-5 right-5 size-8 text-slate-100 transition-colors duration-300 group-hover:text-red-100" />
-
-                            {/* Stars */}
-                            <div className="flex gap-0.5">
-                                {Array.from({ length: t.stars }).map((_, si) => (
-                                    <StarIcon key={si} className="size-4 fill-amber-400 text-amber-400" />
-                                ))}
-                            </div>
-
-                            {/* Quote text */}
-                            <p className="flex-1 text-sm leading-7 text-slate-600">"{t.text}"</p>
-
-                            {/* Author */}
-                            <div className="flex items-center gap-3 border-t border-slate-100 pt-4">
-                                <div className={`flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${t.avatarBg} text-sm font-bold text-white shadow-md`}>
-                                    {t.avatar}
-                                </div>
-                                <div>
-                                    <div className="text-sm font-semibold text-slate-950">{t.name}</div>
-                                    <div className="text-xs text-slate-400">{t.role}</div>
-                                </div>
-                            </div>
-                        </motion.div>
+                        <TestimonialCard key={i} t={t} index={i} />
                     ))}
                 </div>
             </div>
         </section>
+    );
+}
+
+function TestimonialCard({ t, index }: { t: (typeof testimonials)[0]; index: number }) {
+    const ref = useRef<HTMLDivElement>(null);
+    const inView = useInView(ref, { once: true, margin: "-40px" });
+
+    return (
+        <motion.div
+            ref={ref}
+            initial={{ opacity: 0, y: 28 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.55, delay: index * 0.1, ease: EASE }}
+            className={`flex flex-col justify-between rounded-2xl border border-border bg-surface p-6 transition-colors duration-300 hover:border-muted ${
+                index === 1 ? "md:-mt-4" : ""
+            }`}
+        >
+            <div>
+                {/* Metric badge */}
+                <div className="mb-4 inline-flex rounded-md bg-ink px-2.5 py-1 text-[11px] font-semibold text-accent font-display tabular-nums">
+                    {t.metric}
+                </div>
+                {/* Quote */}
+                <p className="text-sm leading-relaxed text-text/80">
+                    &ldquo;{t.text}&rdquo;
+                </p>
+            </div>
+
+            {/* Author */}
+            <div className="flex items-center gap-3 mt-6 pt-4 border-t border-border">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-raised text-xs font-bold text-accent font-display">
+                    {t.avatar}
+                </div>
+                <div>
+                    <div className="text-sm font-medium text-white">{t.name}</div>
+                    <div className="text-xs text-muted">{t.role}</div>
+                </div>
+            </div>
+        </motion.div>
     );
 }
