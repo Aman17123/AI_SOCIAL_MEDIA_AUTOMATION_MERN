@@ -9,8 +9,7 @@ import Footer from "../components/Home/Footer";
 
 export default function Landing() {
     return (
-        <>
-        <div className="min-h-screen overflow-x-hidden bg-[#fbfaf8] text-slate-950 font-sans selection:bg-red-500 selection:text-white">
+        <div className="min-h-screen overflow-x-hidden bg-ink text-text font-body selection:bg-accent selection:text-ink">
             <Navbar />
             <Hero />
             <Features />
@@ -20,6 +19,5 @@ export default function Landing() {
             <CTA />
             <Footer />
         </div>
-        </>
     );
 }
