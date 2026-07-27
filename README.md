@@ -36,12 +36,6 @@
 
 ---
 
-## Screenshots
-
-<p align="center">
-  <em>Screenshots coming soon.</em>
-</p>
-
 ---
 
 ## Features
