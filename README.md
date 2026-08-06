@@ -424,7 +424,7 @@ For full backend functionality including the scheduler:
 
 ## Author
 
-**Aman Alphiones**
+**Aman Nakoti**
 
 <p align="left">
   <a href="https://amannakoti.vercel.app/">
@@ -438,5 +438,5 @@ For full backend functionality including the scheduler:
 ---
 
 <p align="center">
-  Built with ❤️ using the MERN stack
+  Built with ❤️ Aman  using the MERN stack
 </p>
